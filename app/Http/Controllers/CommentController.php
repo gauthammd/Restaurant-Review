@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Restaurant;
 use App\Comment;
+use Pusher\Laravel\Facades\Pusher;
 
 
 class CommentController extends Controller
@@ -49,6 +50,8 @@ class CommentController extends Controller
         $comment->restaurant_id = $restaurant_id;
 //        echo "yes";
         $comment->save();
+
+        Pusher::trigger('comments', 'new-comment', $comment, request()->header('X-Socket-Id'));
         return back();
 
     }

@@ -38,7 +38,7 @@
 
     <div> Comments </div>
     
-    <ul class = "list-group">
+    <ul class = "list-group" id = "comments">
             @foreach($restaurant->comments as $comment)
             <li class = "list-group-item">
                 <span>{{$comment->comment}}</span><span style = "float:right">{{$comment->user->name}}</span>
@@ -113,4 +113,22 @@ return false;
 
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDgYwLaQvnDAsrLllVZZvmmn-2D9Xuqi-U&callback=myMap"></script>
 
+<script src="https://js.pusher.com/4.2/pusher.min.js"></script>
+<script>
+   function displayComment(data) {
+    //    alert(data.comment);
+            $('#comments').prepend('<li class = "list-group-item"> <span>' + data.comment + '</span><span style = "float:right">' + data.comment + '</span></li>');
+        }
+
+
+    var socket = new Pusher("597e415c9aa87d6c98f1", {
+        cluster: 'eu',
+    });
+
+    socket.connection.bind('connected', function() {
+        window.socketId = socket.connection.socket_id;
+    });
+    socket.subscribe('comments')
+        .bind('new-comment',displayComment);
+</script>
 @endsection
